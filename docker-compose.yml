@@ -1,9 +1,6 @@
 services:
   php:
-    image: chialab/php-dev:8.1-apache
+    image: ghcr.io/lorddistrict/crontab-api:latest
     restart: unless-stopped
     ports:
       - "127.0.0.1:9090:80"
-    volumes:
-      - ./api:/var/www/html
-      - ./config/docker/php/000-default.conf:/etc/apache2/sites-available/000-default.conf
