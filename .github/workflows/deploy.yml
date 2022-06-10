@@ -1,0 +1,23 @@
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - edited
+    branches:
+      - develop
+      - master
+jobs:
+  api:
+    name: Deployment
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v2
+        - name: Build and Publish API
+          uses: elgohr/Publish-Docker-Github-Action@master
+          with:
+            name: Lorddistrict/hraesvelg/hraesvelg-api
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+            registry: docker.pkg.github.com
+            dockerfile: docker/php/Dockerfile-prod
