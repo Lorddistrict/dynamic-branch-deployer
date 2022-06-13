@@ -7,5 +7,5 @@ services:
       - "127.0.0.1:9000:80"
     volumes:
       - ./api:/var/www/html
-      - ./config/docker/backend/000-default.conf:/etc/apache2/sites-available/000-default.conf'
+      - ./config/docker/backend/000-default.conf:/etc/apache2/sites-available/000-default.conf
     user: 1000:1000
