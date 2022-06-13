@@ -22,7 +22,7 @@ jobs:
             password: ${{ secrets.GITHUB_TOKEN }}
             registry: ghcr.io
   deploy:
-    name: Deploy on target server
+    name: Login to Github Repository & Deploy
     runs-on: ubuntu-latest
     needs: [ build ]
     steps:
