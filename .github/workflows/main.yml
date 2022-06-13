@@ -32,6 +32,9 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v5.2
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -42,5 +45,5 @@ jobs:
             cd /home/github_actions/dynamic-branch-deployer
             docker compose pull || true
             docker compose build
-            docker compose up -d
+            docker compose -p ${{ steps.branch-name.outputs.current_branch }} up -d
             docker compose exec php composer install

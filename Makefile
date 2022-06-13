@@ -2,7 +2,7 @@ CONSOLE=bin/console
 
 .PHONY: sh
 sh:
-	docker compose exec php bash
+	docker compose exec backend bash
 
 .PHONY: restart
 restart:
