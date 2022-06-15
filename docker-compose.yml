@@ -3,6 +3,8 @@ services:
   backend:
     build: .
     restart: unless-stopped
+    ports:
+      - "80"
     volumes:
       - ./api:/var/www/html
       - ./config/docker/backend/000-default.conf:/etc/apache2/sites-available/000-default.conf
