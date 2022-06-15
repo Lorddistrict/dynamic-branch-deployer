@@ -6,6 +6,8 @@ on:
       - reopened
       - edited
       - synchronize
+    branches:
+      - *
 jobs:
   usage:
     runs-on: ubuntu-latest
