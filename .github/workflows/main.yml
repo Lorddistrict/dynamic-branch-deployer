@@ -6,9 +6,6 @@ on:
       - reopened
       - edited
       - synchronize
-    branches:
-      - develop
-      - master
 jobs:
   usage:
     runs-on: ubuntu-latest
