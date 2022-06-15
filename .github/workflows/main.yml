@@ -50,6 +50,6 @@ jobs:
             docker compose -p ${{ env.GITHUB_HEAD_REF_SLUG }} up -d
             docker compose exec ${{ env.DOCKER_SERVICE_NAME }} composer install
             cat config/docker/${{ env.DOCKER_SERVICE_NAME }}/branch_template.conf > /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
-            ln -s /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf /etc/nginx/sites-enabled/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
+            ln -sf /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf /etc/nginx/sites-enabled/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
             sed -i "s/docker_service_port/$(docker port ${{ env.GITHUB_HEAD_REF_SLUG }}-${{ env.DOCKER_SERVICE_NAME }}-1 | awk -F':' '{print $2}' | tr -d '\n')/g" /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
             sudo /usr/sbin/service nginx restart
