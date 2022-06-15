@@ -15,7 +15,7 @@ jobs:
       - name: Build and Publish API
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: Lorddistrict/dynamic-branch-deployer/crontab-api:${{ env.GITHUB_REF_SLUG }}
+          name: Lorddistrict/dynamic-branch-deployer/crontab-api:${{ env.GITHUB_HEAD_REF_SLUG }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
@@ -38,38 +38,13 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            echo "Partial variables"
-            echo "   repository owner    : ${{ env.GITHUB_REPOSITORY_OWNER_PART }}"
-            echo "   repository name     : ${{ env.GITHUB_REPOSITORY_NAME_PART }}"
-            echo "Slug variables"
-            echo "   repository          : ${{ env.GITHUB_REPOSITORY_SLUG }}"
-            echo "   repository owner    : ${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}"
-            echo "   repository name     : ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}"
-            echo "   ref                 : ${{ env.GITHUB_REF_SLUG }}"
-            echo "   head ref            : ${{ env.GITHUB_HEAD_REF_SLUG }}"
-            echo "   base ref            : ${{ env.GITHUB_BASE_REF_SLUG }}"
-            echo "   event ref           : ${{ env.GITHUB_EVENT_REF_SLUG }}"
-            echo "Slug URL variables"
-            echo "   repository          : ${{ env.GITHUB_REPOSITORY_SLUG_URL }}"
-            echo "   repository owner    : ${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG_URL }}"
-            echo "   repository name     : ${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG_URL }}"
-            echo "   ref                 : ${{ env.GITHUB_REF_SLUG_URL }}"
-            echo "   head ref            : ${{ env.GITHUB_HEAD_REF_SLUG_URL }}"
-            echo "   base ref            : ${{ env.GITHUB_BASE_REF_SLUG_URL }}"
-            echo "   event ref           : ${{ env.GITHUB_EVENT_REF_SLUG_URL }}"
-            echo "Short SHA variables"
-            echo "   sha                 : ${{ env.GITHUB_SHA_SHORT }}"
-            echo "   pull request sha    : ${{ env.GITHUB_EVENT_PULL_REQUEST_HEAD_SHA_SHORT }}"
-            echo ${{ env.GITHUB_REF_SLUG }}
-            echo ${{ env.GITHUB_REF_SLUG }}.conf
             echo config/docker/$(docker_service_name)/branch_template.conf
             docker_service_name="backend"
-            nginx_config_file_name=${{ env.GITHUB_REF_SLUG }}.conf
-#            cd /home/github_actions/dynamic-branch-deployer
-#            docker compose pull || true
-#            docker compose build
-#            docker compose -p ${{ env.GITHUB_REF_SLUG }} up -d
-#            docker compose exec $(docker_service_name) composer install
-#            cat config/docker/$(docker_service_name)/branch_template.conf > /etc/nginx/sites-available/$(nginx_config_file_name)
-#            ln -s /etc/nginx/sites-available/$(nginx_config_file_name) /etc/nginx/sites-enabled/$(nginx_config_file_name)
-#            sed -i "s/docker_service_port/$(docker port ${{ env.GITHUB_REF_SLUG }}-$(docker_service_name)-1 | awk -F':' '{print $2}' | tr -d '\n')/g" /etc/nginx/sites-available/$(nginx_config_file_name)
+            cd /home/github_actions/dynamic-branch-deployer
+            docker compose pull || true
+            docker compose build
+            docker compose -p ${{ env.GITHUB_HEAD_REF_SLUG }} up -d
+            docker compose exec $(docker_service_name) composer install
+            cat config/docker/$(docker_service_name)/branch_template.conf > /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
+            ln -s /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf /etc/nginx/sites-enabled/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
+            sed -i "s/docker_service_port/$(docker port ${{ env.GITHUB_HEAD_REF_SLUG }}-$(docker_service_name)-1 | awk -F':' '{print $2}' | tr -d '\n')/g" /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
