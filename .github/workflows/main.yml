@@ -5,6 +5,11 @@ on:
       - reopened
       - edited
       - synchronize
+
+env:
+  DOCKER_SERVICE_NAME: backend
+  API_IMAGE_NAME: $DOCKER_SERVICE_NAME
+
 jobs:
 #  build:
 #    name: Build & Push image
@@ -15,7 +20,7 @@ jobs:
 #      - name: Build and Publish API
 #        uses: elgohr/Publish-Docker-Github-Action@master
 #        with:
-#          name: Lorddistrict/dynamic-branch-deployer/crontab-api:${{ env.GITHUB_HEAD_REF_SLUG }}
+#          name: Lorddistrict/dynamic-branch-deployer/$API_IMAGE_NAME:${{ env.GITHUB_HEAD_REF_SLUG }}
 #          username: ${{ github.actor }}
 #          password: ${{ secrets.GITHUB_TOKEN }}
 #          registry: ghcr.io
@@ -38,13 +43,13 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker_service_name='backend'
-            echo config/docker/$docker_service_name/branch_template.conf
+            echo config/docker/$DOCKER_SERVICE_NAME/branch_template.conf
             cd /home/github_actions/dynamic-branch-deployer
             docker compose pull || true
             docker compose build
             docker compose -p ${{ env.GITHUB_HEAD_REF_SLUG }} up -d
-            docker compose exec $docker_service_name composer install
-            cat config/docker/$docker_service_name/branch_template.conf > /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
+            docker compose exec $DOCKER_SERVICE_NAME composer install
+            cat config/docker/$DOCKER_SERVICE_NAME/branch_template.conf > /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
             ln -s /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf /etc/nginx/sites-enabled/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
-            sed -i "s/docker_service_port/$(docker port ${{ env.GITHUB_HEAD_REF_SLUG }}-$docker_service_name-1 | awk -F':' '{print $2}' | tr -d '\n')/g" /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
+            sed -i "s/docker_service_port/$(docker port ${{ env.GITHUB_HEAD_REF_SLUG }}-$DOCKER_SERVICE_NAME-1 | awk -F':' '{print $2}' | tr -d '\n')/g" /etc/nginx/sites-available/${{ env.GITHUB_HEAD_REF_SLUG }}.conf
+            sudo /usr/sbin/service nginx restart
