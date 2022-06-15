@@ -10,14 +10,12 @@ jobs:
     name: Build & Push image
     runs-on: ubuntu-latest
     steps:
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v5.2
+      - uses: rlespinasse/github-slug-action@v4
       - uses: actions/checkout@v2
       - name: Build and Publish API
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: Lorddistrict/dynamic-branch-deployer/crontab-api:${{ steps.branch-name.outputs.current_branch }}
+          name: Lorddistrict/dynamic-branch-deployer/crontab-api:${{ env.GITHUB_REF_SLUG }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
