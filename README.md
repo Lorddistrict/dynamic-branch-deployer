@@ -6,6 +6,7 @@ Mais lors de l'exécution du script, github_actions n'avait les permissions pour
 Il a donc fallu changer leur groupe avec le même nom que l'utilisateur précédemment créé :
 
 ```# chown -R root:github_actions /etc/nginx/sites-available```
+
 ```# chown -R root:github_actions /etc/nginx/sites-enabled```
 
 L'utilisateur a généré une clé SSH.
